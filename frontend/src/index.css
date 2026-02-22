@@ -1,13 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html, body, #root {
   height: 100%;
-  margin: 0;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
-.app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  gap: 8px;
+
+body {
+  @apply bg-gray-50 text-gray-800 antialiased;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+
+.container-center {
+  @apply min-h-screen flex items-center justify-center px-4;
+}
+
+.card {
+  @apply w-full max-w-md bg-white rounded-lg shadow-md p-6;
+}
+
+.btn {
+  @apply px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 disabled:opacity-60;
+}
+
+.input {
+  @apply mt-1 block w-full border border-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200;
+}
+
+.error {
+  @apply mt-2 text-sm text-red-600;
 }
