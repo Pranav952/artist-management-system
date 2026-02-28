@@ -7,7 +7,8 @@ const router = Router();
 router.post(
   '/register',
   [
-    body('name').isString().isLength({ min: 2 }),
+    body('first_name').isString().isLength({ min: 2 }),
+    body('last_name').isString().isLength({ min: 2 }),
     body('email').isEmail(),
     body('password').isLength({ min: 6 }),
   ],

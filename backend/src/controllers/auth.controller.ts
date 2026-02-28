@@ -7,8 +7,17 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-    const { name, email, password } = req.body;
-    const result = await authService.registerUser(name, email, password);
+    const { first_name, last_name, email, password, phone, dob, gender, address } = req.body;
+    const result = await authService.registerUser(
+      first_name,
+      last_name,
+      email,
+      password,
+      phone,
+      dob,
+      gender,
+      address
+    );
     return res.status(201).json(result);
   } catch (err) {
     next(err);

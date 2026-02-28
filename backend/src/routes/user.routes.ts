@@ -10,14 +10,23 @@ router.get('/', requireAuth, userController.list);
 router.post(
   '/',
   requireAuth,
-  [body('name').isString().isLength({ min: 2 }), body('email').isEmail(), body('password').isLength({ min: 6 })],
+  [
+    body('first_name').isString().isLength({ min: 2 }),
+    body('last_name').isString().isLength({ min: 2 }),
+    body('email').isEmail(),
+    body('password').isLength({ min: 6 }),
+  ],
   userController.create
 );
 
 router.put(
   '/:id',
   requireAuth,
-  [body('name').optional().isString(), body('email').optional().isEmail()],
+  [
+    body('first_name').optional().isString(),
+    body('last_name').optional().isString(),
+    body('email').optional().isEmail(),
+  ],
   userController.update
 );
 

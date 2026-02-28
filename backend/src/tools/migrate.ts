@@ -46,25 +46,36 @@ async function applyMigration(filePath: string, name: string) {
 }
 
 async function run() {
-  const migrationsDir = path.resolve(__dirname, '../../migrations');
-  if (!fs.existsSync(migrationsDir)) {
-    console.error('No migrations directory found at', migrationsDir);
+  const envDir = process.env.MIGRATIONS_DIR;
+  const defaultDirs = [path.resolve(__dirname, '../../migrations'), path.resolve(__dirname, '../../db/migrations')];
+  let migrationsDir = envDir ? path.resolve(envDir) : defaultDirs.find((d) => fs.existsSync(d));
+
+  if (!migrationsDir) {
+    console.error('No migrations directory found. Searched:', defaultDirs.join(', '));
     process.exit(1);
   }
 
   await ensureMigrationsTable();
   const applied = await getAppliedMigrations();
 
-  const files = fs
-    .readdirSync(migrationsDir)
-    .filter((f) => f.endsWith('.sql'))
-    .sort();
+  const schemaDir = path.resolve(__dirname, '../../db/schema');
+  const dirsToScan: string[] = [];
+  if (migrationsDir) dirsToScan.push(migrationsDir);
+  if (fs.existsSync(schemaDir)) dirsToScan.push(schemaDir);
 
-  for (const file of files) {
-    if (applied.has(file)) continue;
-    const filePath = path.join(migrationsDir, file);
-    console.log('running migration', file);
-    await applyMigration(filePath, file);
+  for (const dir of dirsToScan) {
+    const files = fs
+      .readdirSync(dir)
+      .filter((f) => f.endsWith('.sql'))
+      .sort();
+
+    for (const file of files) {
+      const filePath = path.join(dir, file);
+      const name = path.relative(process.cwd(), filePath);
+      if (applied.has(name)) continue;
+      console.log('running migration', name);
+      await applyMigration(filePath, name);
+    }
   }
 
   console.log('migrations complete');

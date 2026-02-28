@@ -29,3 +29,30 @@ export const userService = {
     await api.delete(`${API_BASE}/users/${id}`);
   },
 };
+
+export const artistService = {
+  async getArtists(page = 1, limit = 10): Promise<PaginatedResponse<Artist>> {
+    const res = await api.get(`${API_BASE}/artists`, { params: { page, limit } });
+    return res.data;
+  },
+
+  async getArtistById(id: number): Promise<Artist> {
+    const res = await api.get(`${API_BASE}/artists/${id}`);
+    return res.data;
+  },
+
+  async createArtist(payload: Omit<Artist, 'id' | 'created_at' | 'updated_at'>): Promise<Artist> {
+    const res = await api.post(`${API_BASE}/artists`, payload);
+    return res.data;
+  },
+
+  async updateArtist(id: number, payload: Partial<Artist>): Promise<Artist> {
+    const res = await api.put(`${API_BASE}/artists/${id}`, payload);
+    return res.data;
+  },
+
+  async deleteArtist(id: number): Promise<void> {
+    await api.delete(`${API_BASE}/artists/${id}`);
+  },
+};
+

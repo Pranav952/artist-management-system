@@ -19,9 +19,9 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-    const { name, email, password } = req.body;
+    const { first_name, last_name, email, password, phone, dob, gender, address } = req.body;
     const hashed = await hashPassword(password);
-    const user = await userService.createUser(name, email, hashed);
+    const user = await userService.createUser(first_name, last_name, email, hashed, phone, dob, gender, address);
     return res.status(201).json(user);
   } catch (err) {
     next(err);
@@ -34,8 +34,8 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
     const id = Number(req.params.id);
-    const { name, email } = req.body;
-    const user = await userService.updateUser(id, name, email);
+    const { first_name, last_name, email, phone, dob, gender, address } = req.body;
+    const user = await userService.updateUser(id, first_name, last_name, email, phone, dob, gender, address);
     return res.json(user);
   } catch (err) {
     next(err);

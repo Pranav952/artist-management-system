@@ -15,10 +15,11 @@ export interface User {
 export interface Artist {
   id: number;
   name: string;
-  email?: string;
-  phone?: string;
-  bio?: string;
-  image_url?: string;
+  dob?: string | null;
+  gender?: 'male' | 'female' | 'other' | null;
+  address?: string | null;
+  first_release_year?: number | null;
+  no_of_albums_released?: number;
   created_at?: string;
   updated_at?: string;
 }
