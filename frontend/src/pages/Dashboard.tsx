@@ -1,8 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import Users from './Users';
+import ArtistsPage from './Artists';
 
 const Dashboard: React.FC = () => {
   const auth = useContext(AuthContext)!;
+  const [tab, setTab] = useState<'users' | 'artists' | 'songs'>('artists');
+
+  const displayName = auth.user ? `${auth.user.first_name || ''} ${auth.user.last_name || ''}`.trim() : '';
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -10,14 +15,40 @@ const Dashboard: React.FC = () => {
         <header className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-semibold">Dashboard</h2>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-700">{auth.user?.name}</span>
+            <span className="text-sm text-gray-700">{displayName}</span>
             <button className="btn" onClick={auth.logout}>Logout</button>
           </div>
         </header>
 
+        <nav className="mb-4">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setTab('users')}
+              className={`px-3 py-2 rounded ${tab === 'users' ? 'bg-indigo-600 text-white' : 'border'}`}>
+              Users
+            </button>
+            <button
+              onClick={() => setTab('artists')}
+              className={`px-3 py-2 rounded ${tab === 'artists' ? 'bg-indigo-600 text-white' : 'border'}`}>
+              Artists
+            </button>
+            <button
+              onClick={() => setTab('songs')}
+              className={`px-3 py-2 rounded ${tab === 'songs' ? 'bg-indigo-600 text-white' : 'border'}`}>
+              Songs
+            </button>
+          </div>
+        </nav>
+
         <main>
           <div className="bg-white rounded shadow p-6">
-            <p className="text-sm text-gray-600">Hellow world.</p>
+            {tab === 'users' && <Users />}
+            {tab === 'artists' && <ArtistsPage />}
+            {tab === 'songs' && (
+              <div>
+                <p className="text-sm text-gray-600">Comming Soon</p>
+              </div>
+            )}
           </div>
         </main>
       </div>

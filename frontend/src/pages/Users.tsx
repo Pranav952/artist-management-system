@@ -43,7 +43,7 @@ const Users: React.FC = () => {
         last_name: user.last_name,
         email: user.email,
         phone: user.phone || '',
-        dob: user.dob || '',
+        dob: user.dob ? String(user.dob).split('T')[0] : '',
         gender: user.gender || 'm',
         address: user.address || '',
         password: '',
@@ -130,6 +130,18 @@ const Users: React.FC = () => {
       key: 'phone',
       label: 'Phone',
       render: (value: string) => value || '—',
+    },
+    {
+      key: 'dob',
+      label: 'DOB',
+      render: (value: string) => {
+        if (!value) return '—';
+        try {
+          return new Date(value).toISOString().slice(0, 10);
+        } catch (e) {
+          return String(value);
+        }
+      },
     },
     {
       key: 'gender',

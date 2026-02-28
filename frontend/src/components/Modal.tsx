@@ -1,6 +1,5 @@
 import React from 'react';
 
-// Reusable modal form component
 interface ModalProps {
   isOpen: boolean;
   title: string;
