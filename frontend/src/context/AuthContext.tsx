@@ -3,12 +3,21 @@ import api from '../services/api';
 
 interface AuthState {
   token: string | null;
-  user: { id: number; name: string; email: string } | null;
+  user: { id: number; first_name?: string; last_name?: string; email: string } | null;
 }
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  register: (
+    first_name: string,
+    last_name: string,
+    email: string,
+    password: string,
+    phone?: string,
+    dob?: string,
+    gender?: string,
+    address?: string
+  ) => Promise<void>;
   logout: () => void;
 }
 
@@ -34,8 +43,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('user', JSON.stringify(u));
   };
 
-  const register = async (name: string, email: string, password: string) => {
-    const res = await api.post('/api/auth/register', { name, email, password });
+  const register = async (
+    first_name: string,
+    last_name: string,
+    email: string,
+    password: string,
+    phone?: string,
+    dob?: string,
+    gender?: string,
+    address?: string
+  ) => {
+    const res = await api.post('/api/auth/register', { first_name, last_name, email, password, phone, dob, gender, address });
     const { token: t, user: u } = res.data;
     setToken(t);
     setUser(u);
