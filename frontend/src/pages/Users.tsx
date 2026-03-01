@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { User } from '../types';
 import { userService } from '../services/data';
 import Table, { Column } from '../components/Table';
@@ -8,6 +8,7 @@ import { useTable } from '../hooks/useTable';
 const Users: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [generalError, setGeneralError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -36,6 +37,7 @@ const Users: React.FC = () => {
 
   const openModal = (user?: User) => {
     setFormError(null);
+    setGeneralError(null);
     if (user) {
       setEditingId(user.id);
       setFormData({
@@ -99,18 +101,19 @@ const Users: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = useCallback(async (id: number) => {
     if (!confirm('Are you sure you want to delete this user?')) return;
 
+    setGeneralError(null);
     try {
       await userService.deleteUser(id);
       await table.refetch();
     } catch (err: any) {
-      table.error || (err.response?.data?.message || 'Failed to delete user');
+      setGeneralError(err.response?.data?.message || 'Failed to delete user');
     }
-  };
+  }, [table]);
 
-  const columns: Column<User>[] = [
+  const columns: Column<User>[] = useMemo(() => [
     {
       key: 'first_name',
       label: 'First Name',
@@ -151,10 +154,11 @@ const Users: React.FC = () => {
         return map[value] || '—';
       },
     },
-  ];
+  ], []);
 
   return (
     <div className="space-y-6">
+      {generalError && <div className="error-banner">{generalError}</div>}
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-semibold">Users Management</h3>
         <button onClick={() => openModal()} className="btn">
@@ -310,4 +314,4 @@ const Users: React.FC = () => {
   );
 };
 
-export default Users;
+export default React.memo(Users);

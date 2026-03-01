@@ -11,7 +11,7 @@ export const listMusicByArtist = async (
   const client = await pool.connect();
   try {
     const totalRes = await client.query(
-      'SELECT COUNT(*)::int AS total FROM music WHERE artist_id = $1',
+      'SELECT COUNT(*)::int AS total FROM music WHERE artist_id = $1 AND deleted_at IS NULL',
       [artistId]
     );
     const total = totalRes.rows[0].total as number;
@@ -22,7 +22,7 @@ export const listMusicByArtist = async (
               m.created_at, m.updated_at, a.name as artist_name
        FROM music m
        INNER JOIN artists a ON m.artist_id = a.id
-       WHERE m.artist_id = $1
+       WHERE m.artist_id = $1 AND m.deleted_at IS NULL
        ORDER BY m.created_at DESC LIMIT $2 OFFSET $3`,
       [artistId, limit, offset]
     );
@@ -40,7 +40,7 @@ export const getMusicById = async (id: number) => {
               m.created_at, m.updated_at, a.name as artist_name
        FROM music m
        INNER JOIN artists a ON m.artist_id = a.id
-       WHERE m.id = $1`,
+       WHERE m.id = $1 AND m.deleted_at IS NULL`,
       [id]
     );
     if (res.rowCount === 0) throw new ApiError(404, 'Music not found');
@@ -113,7 +113,7 @@ export const updateMusic = async (
 
     const res = await client.query(
       `UPDATE music SET ${updates.join(', ')}
-       WHERE id = $${paramCount}
+       WHERE id = $${paramCount} AND deleted_at IS NULL
        RETURNING id, artist_id, title, album_name, genre, created_at, updated_at,
                  (SELECT name FROM artists WHERE artists.id = music.artist_id) as artist_name`,
       values
@@ -128,7 +128,10 @@ export const updateMusic = async (
 export const deleteMusic = async (id: number) => {
   const client = await pool.connect();
   try {
-    const res = await client.query('DELETE FROM music WHERE id = $1 RETURNING id', [id]);
+    const res = await client.query(
+      'UPDATE music SET deleted_at = NOW(), updated_at = NOW() WHERE id = $1 AND deleted_at IS NULL RETURNING id',
+      [id]
+    );
     if (res.rowCount === 0) throw new ApiError(404, 'Music not found');
     return;
   } finally {

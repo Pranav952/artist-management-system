@@ -58,7 +58,7 @@ export const createUser = async (
 ) => {
   const client = await pool.connect();
   try {
-    const exists = await client.query('SELECT id FROM users WHERE email = $1', [email]);
+    const exists = await client.query('SELECT id FROM users WHERE email = $1 AND deleted_at IS NULL', [email]);
     if (exists.rowCount && exists.rowCount > 0) throw new ApiError(409, 'Email already in use');
 
   

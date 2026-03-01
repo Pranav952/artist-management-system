@@ -28,6 +28,7 @@ const Login: React.FC = () => {
     <div className="container-center">
       <div className="card">
         <h2 className="text-2xl font-semibold mb-4">Login</h2>
+        {error && <div className="error-banner">{error}</div>}
         <form onSubmit={submit} className="space-y-4">
           <div>
             <label className="text-sm font-medium">Email</label>
@@ -40,7 +41,6 @@ const Login: React.FC = () => {
           <div>
             <button className="btn" disabled={loading}>{loading ? 'Logging...' : 'Login'}</button>
           </div>
-          {error && <div className="error">{error}</div>}
         </form>
         <p className="mt-4 text-sm">
           No account? <Link className="text-indigo-600 hover:underline" to="/register">Register</Link>
