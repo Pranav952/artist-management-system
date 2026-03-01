@@ -47,12 +47,17 @@ const ArtistsPage: React.FC = () => {
     setEditing(null);
     setForm(emptyForm);
     setShowForm(true);
+    setError(null);
   };
 
   const openEdit = (a: Artist) => {
     setEditing(a);
-    setForm(a);
+    setForm({
+      ...a,
+      dob: a.dob ? a.dob.split('T')[0] : undefined,
+    });
     setShowForm(true);
+    setError(null);
   };
 
   const handleDelete = async (id: number) => {
@@ -73,10 +78,20 @@ const ArtistsPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
+      // Clean up form data - convert empty strings to null
+      const cleanData: Partial<Artist> = {
+        ...form,
+        dob: form.dob || null,
+        gender: form.gender || null,
+        address: form.address || null,
+        first_release_year: form.first_release_year || null,
+        no_of_albums_released: form.no_of_albums_released ?? 0,
+      };
+      
       if (editing) {
-        await artistService.updateArtist(editing.id, form as Partial<Artist>);
+        await artistService.updateArtist(editing.id, cleanData);
       } else {
-        await artistService.createArtist(form as Omit<Artist, 'id' | 'created_at' | 'updated_at'>);
+        await artistService.createArtist(cleanData as Omit<Artist, 'id' | 'created_at' | 'updated_at'>);
       }
       setShowForm(false);
       fetch(page);
@@ -89,14 +104,24 @@ const ArtistsPage: React.FC = () => {
 
   const columns = [
     { key: 'name' as const, label: 'Name' },
-    { key: 'first_release_year' as const, label: 'First Release' },
-    { key: 'no_of_albums_released' as const, label: 'Albums' },
-    { key: 'created_at' as const, label: 'Created' },
+    { 
+      key: 'dob' as const, 
+      label: 'Date of Birth',
+      render: (value: string | null) => value ? new Date(value).toLocaleDateString() : '—'
+    },
+    { key: 'first_release_year' as const, label: 'First Release Year' },
+    { key: 'no_of_albums_released' as const, label: 'Albums Released' },
+    { 
+      key: 'gender' as const, 
+      label: 'Gender',
+      render: (value: string | null) => value ? value.charAt(0).toUpperCase() + value.slice(1) : '—'
+    },
+    { key: 'address' as const, label: 'Address', render: (value: string | null) => value || '—' },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-6">
         <header className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-semibold">Artists</h2>
           <div className="flex items-center gap-3">
@@ -129,6 +154,7 @@ const ArtistsPage: React.FC = () => {
           <div className="fixed inset-0 bg-black bg-opacity-30 flex items-start justify-center p-6">
             <div className="bg-white rounded shadow max-w-2xl w-full p-6">
               <h3 className="text-lg font-semibold mb-4">{editing ? 'Edit Artist' : 'New Artist'}</h3>
+              {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded">{error}</div>}
               <form onSubmit={submit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Name</label>
@@ -137,6 +163,16 @@ const ArtistsPage: React.FC = () => {
                     value={form.name || ''}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Date of Birth</label>
+                  <input
+                    type="date"
+                    className="w-full border border-gray-300 rounded px-3 py-2"
+                    value={form.dob || ''}
+                    onChange={(e) => setForm({ ...form, dob: e.target.value || undefined })}
                   />
                 </div>
 
@@ -166,7 +202,7 @@ const ArtistsPage: React.FC = () => {
                     <select
                       className="w-full border border-gray-300 rounded px-3 py-2"
                       value={form.gender || ''}
-                      onChange={(e) => setForm({ ...form, gender: e.target.value || undefined })}
+                      onChange={(e) => setForm({ ...form, gender: (e.target.value || undefined) as 'male' | 'female' | 'other' | undefined })}
                     >
                       <option value="">—</option>
                       <option value="male">Male</option>
@@ -186,8 +222,8 @@ const ArtistsPage: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-3 justify-end">
-                  <button type="button" onClick={() => setShowForm(false)} className="px-3 py-2 border rounded">Cancel</button>
-                  <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded">Save</button>
+                  <button type="button" onClick={() => { setShowForm(false); setError(null); }} className="px-3 py-2 border rounded">Cancel</button>
+                  <button type="submit" disabled={loading} className="px-4 py-2 bg-indigo-600 text-white rounded disabled:opacity-50">{loading ? 'Saving...' : 'Save'}</button>
                 </div>
               </form>
             </div>
