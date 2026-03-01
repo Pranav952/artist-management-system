@@ -22,5 +22,6 @@ CREATE TABLE IF NOT EXISTS users (
   deleted_at TIMESTAMP WITH TIME ZONE NULL
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS ux_users_email ON users (email);
+DROP INDEX IF EXISTS ux_users_email;
+CREATE UNIQUE INDEX IF NOT EXISTS ux_users_email_active ON users (email) WHERE deleted_at IS NULL;
 CREATE INDEX IF NOT EXISTS idx_users_created_at_desc ON users (created_at DESC);
