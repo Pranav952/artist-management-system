@@ -65,26 +65,55 @@ export const createArtist = async (
 export const updateArtist = async (
   id: number,
   name?: string,
-  dob?: string,
-  gender?: string,
-  address?: string,
-  first_release_year?: number,
-  no_of_albums_released?: number
+  dob?: string | null,
+  gender?: string | null,
+  address?: string | null,
+  first_release_year?: number | null,
+  no_of_albums_released?: number | null
 ) => {
   const client = await pool.connect();
   try {
+    const updates: string[] = [];
+    const values: any[] = [];
+    let paramCount = 1;
+
+    if (name !== undefined) {
+      updates.push(`name = $${paramCount++}`);
+      values.push(name);
+    }
+    if (dob !== undefined) {
+      updates.push(`dob = $${paramCount++}`);
+      values.push(dob);
+    }
+    if (gender !== undefined) {
+      updates.push(`gender = $${paramCount++}`);
+      values.push(gender);
+    }
+    if (address !== undefined) {
+      updates.push(`address = $${paramCount++}`);
+      values.push(address);
+    }
+    if (first_release_year !== undefined) {
+      updates.push(`first_release_year = $${paramCount++}`);
+      values.push(first_release_year);
+    }
+    if (no_of_albums_released !== undefined) {
+      updates.push(`no_of_albums_released = $${paramCount++}`);
+      values.push(no_of_albums_released);
+    }
+
+    if (updates.length === 0) {
+      throw new ApiError(400, 'No fields to update');
+    }
+
+    updates.push(`updated_at = NOW()`);
+    values.push(id);
+
     const res = await client.query(
-      `UPDATE artists SET
-         name = COALESCE($1, name),
-         dob = COALESCE($2, dob),
-         gender = COALESCE($3, gender),
-         address = COALESCE($4, address),
-         first_release_year = COALESCE($5, first_release_year),
-         no_of_albums_released = COALESCE($6, no_of_albums_released),
-         updated_at = NOW()
-       WHERE id = $7 AND deleted_at IS NULL
+      `UPDATE artists SET ${updates.join(', ')}
+       WHERE id = $${paramCount} AND deleted_at IS NULL
        RETURNING id, name, dob, gender, address, first_release_year, no_of_albums_released, created_at, updated_at`,
-      [name || null, dob || null, gender || null, address || null, first_release_year ?? null, no_of_albums_released ?? null, id]
+      values
     );
     if (res.rowCount === 0) throw new ApiError(404, 'Artist not found');
     return res.rows[0] as Artist;
