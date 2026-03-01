@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const userGenderEnum = z.enum(['male', 'female', 'other']);
+export const userGenderEnum = z.enum(['m', 'f', 'o']);
 
 export const registerSchema = z.object({
   body: z.object({

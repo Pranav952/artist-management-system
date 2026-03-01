@@ -5,7 +5,7 @@ import ArtistsPage from './Artists';
 
 const Dashboard: React.FC = () => {
   const auth = useContext(AuthContext)!;
-  const [tab, setTab] = useState<'users' | 'artists' | 'songs'>('artists');
+  const [tab, setTab] = useState<'users' | 'artists'>('artists');
 
   const displayName = auth.user ? `${auth.user.first_name || ''} ${auth.user.last_name || ''}`.trim() : '';
 
@@ -32,11 +32,6 @@ const Dashboard: React.FC = () => {
               className={`px-3 py-2 rounded ${tab === 'artists' ? 'bg-indigo-600 text-white' : 'border'}`}>
               Artists
             </button>
-            <button
-              onClick={() => setTab('songs')}
-              className={`px-3 py-2 rounded ${tab === 'songs' ? 'bg-indigo-600 text-white' : 'border'}`}>
-              Songs
-            </button>
           </div>
         </nav>
 
@@ -44,11 +39,6 @@ const Dashboard: React.FC = () => {
           <div className="bg-white rounded shadow p-6">
             {tab === 'users' && <Users />}
             {tab === 'artists' && <ArtistsPage />}
-            {tab === 'songs' && (
-              <div>
-                <p className="text-sm text-gray-600">Comming Soon</p>
-              </div>
-            )}
           </div>
         </main>
       </div>

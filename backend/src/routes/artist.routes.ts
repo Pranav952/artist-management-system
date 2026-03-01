@@ -6,11 +6,14 @@ import {
   createArtistSchema,
   updateArtistSchema,
   deleteArtistSchema,
+  getArtistByIdSchema,
 } from '../schemas/artist.schema';
 
 const router = Router();
 
 router.get('/', requireAuth, artistController.list);
+
+router.get('/:id', requireAuth, validate(getArtistByIdSchema), artistController.getById);
 
 router.post(
   '/',
