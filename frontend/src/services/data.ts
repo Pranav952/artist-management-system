@@ -1,5 +1,5 @@
 import api from './api';
-import { User, Artist, Song, PaginatedResponse } from '../types';
+import { User, Artist, Music, PaginatedResponse } from '../types';
 
 const API_BASE = '/api';
 
@@ -56,3 +56,23 @@ export const artistService = {
   },
 };
 
+export const musicService = {
+  async getMusicByArtist(artistId: number, page = 1, limit = 10): Promise<PaginatedResponse<Music>> {
+    const res = await api.get(`${API_BASE}/artists/${artistId}/music`, { params: { page, limit } });
+    return res.data;
+  },
+
+  async createMusic(artistId: number, payload: Omit<Music, 'id' | 'artist_id' | 'created_at' | 'updated_at'>): Promise<Music> {
+    const res = await api.post(`${API_BASE}/artists/${artistId}/music`, payload);
+    return res.data;
+  },
+
+  async updateMusic(id: number, payload: Partial<Music>): Promise<Music> {
+    const res = await api.put(`${API_BASE}/music/${id}`, payload);
+    return res.data;
+  },
+
+  async deleteMusic(id: number): Promise<void> {
+    await api.delete(`${API_BASE}/music/${id}`);
+  },
+};

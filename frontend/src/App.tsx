@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import ArtistMusicPage from './pages/ArtistMusic';
 import PrivateRoute from './components/PrivateRoute';
 
 const App: React.FC = () => {
@@ -18,6 +19,14 @@ const App: React.FC = () => {
             element={
               <PrivateRoute>
                 <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/artists/:artistId/music"
+            element={
+              <PrivateRoute>
+                <ArtistMusicPage />
               </PrivateRoute>
             }
           />

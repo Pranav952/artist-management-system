@@ -12,6 +12,16 @@ export const list = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+export const getById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = Number(req.params.id);
+    const artist = await artistService.getArtistById(id);
+    return res.json(artist);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, dob, gender, address, first_release_year, no_of_albums_released } = req.body;

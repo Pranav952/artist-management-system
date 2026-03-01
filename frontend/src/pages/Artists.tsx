@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { artistService } from '../services/data';
 import Table from '../components/Table';
 import { Artist } from '../types';
@@ -15,6 +16,7 @@ const emptyForm: Partial<Artist> = {
 };
 
 const ArtistsPage: React.FC = () => {
+  const navigate = useNavigate();
   const [artists, setArtists] = useState<Artist[]>([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -142,6 +144,7 @@ const ArtistsPage: React.FC = () => {
               onPageChange={(p) => { setPage(p); fetch(p); }}
               actions={(row: Artist) => (
                 <div className="flex gap-2">
+                  <button onClick={(e) => { e.stopPropagation(); navigate(`/artists/${row.id}/music`); }} className="px-2 py-1 bg-blue-500 text-white rounded">Songs</button>
                   <button onClick={(e) => { e.stopPropagation(); openEdit(row); }} className="px-2 py-1 bg-yellow-500 text-white rounded">Edit</button>
                   <button onClick={(e) => { e.stopPropagation(); handleDelete(row.id); }} className="px-2 py-1 bg-red-500 text-white rounded">Delete</button>
                 </div>
@@ -202,7 +205,10 @@ const ArtistsPage: React.FC = () => {
                     <select
                       className="w-full border border-gray-300 rounded px-3 py-2"
                       value={form.gender || ''}
-                      onChange={(e) => setForm({ ...form, gender: (e.target.value || undefined) as 'male' | 'female' | 'other' | undefined })}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setForm({ ...form, gender: value ? (value as 'male' | 'female' | 'other') : null });
+                      }}
                     >
                       <option value="">—</option>
                       <option value="male">Male</option>

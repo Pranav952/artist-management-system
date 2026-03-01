@@ -4,6 +4,7 @@ import cors from 'cors';
 import authRoutes from './routes/auth.routes';
 import artistRoutes from './routes/artist.routes';
 import userRoutes from './routes/user.routes';
+import musicRoutes from './routes/music.routes';
 import { errorHandler } from './middleware/error.middleware';
 
 
@@ -20,6 +21,7 @@ app.get('/', (_req, res) => res.json({ status: 'ok' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/artists', artistRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api', musicRoutes);
 
 
 app.use(errorHandler);
