@@ -35,6 +35,7 @@ const Register: React.FC = () => {
     <div className="container-center">
       <div className="card">
         <h2 className="text-2xl font-semibold mb-4">Register</h2>
+        {error && <div className="error-banner">{error}</div>}
         <form onSubmit={submit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -82,7 +83,6 @@ const Register: React.FC = () => {
           <div>
             <button className="btn" disabled={loading}>{loading ? 'Creating...' : 'Register'}</button>
           </div>
-          {error && <div className="error">{error}</div>}
         </form>
         <p className="mt-4 text-sm">
           Have an account? <Link className="text-indigo-600 hover:underline" to="/login">Login</Link>
