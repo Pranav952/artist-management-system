@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { artistService } from '../services/data';
 import Table from '../components/Table';
@@ -26,7 +26,7 @@ const ArtistsPage: React.FC = () => {
   const [editing, setEditing] = useState<Artist | null>(null);
   const [form, setForm] = useState<Partial<Artist>>(emptyForm);
 
-  const fetch = async (p = page) => {
+  const fetch = useCallback(async (p = page) => {
     setLoading(true);
     setError(null);
     try {
@@ -39,20 +39,20 @@ const ArtistsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page]);
 
   useEffect(() => {
     fetch(1);
   }, []);
 
-  const openCreate = () => {
+  const openCreate = useCallback(() => {
     setEditing(null);
     setForm(emptyForm);
     setShowForm(true);
     setError(null);
-  };
+  }, []);
 
-  const openEdit = (a: Artist) => {
+  const openEdit = useCallback((a: Artist) => {
     setEditing(a);
     setForm({
       ...a,
@@ -60,9 +60,9 @@ const ArtistsPage: React.FC = () => {
     });
     setShowForm(true);
     setError(null);
-  };
+  }, []);
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = useCallback(async (id: number) => {
     if (!confirm('Delete this artist?')) return;
     setLoading(true);
     try {
@@ -73,9 +73,9 @@ const ArtistsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, fetch]);
 
-  const submit = async (e: React.FormEvent) => {
+  const submit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -102,9 +102,9 @@ const ArtistsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [form, editing, page, fetch]);
 
-  const columns = [
+  const columns = useMemo(() => [
     { key: 'name' as const, label: 'Name' },
     { 
       key: 'dob' as const, 
@@ -119,7 +119,7 @@ const ArtistsPage: React.FC = () => {
       render: (value: string | null) => value ? value.charAt(0).toUpperCase() + value.slice(1) : '—'
     },
     { key: 'address' as const, label: 'Address', render: (value: string | null) => value || '—' },
-  ];
+  ], []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -133,7 +133,7 @@ const ArtistsPage: React.FC = () => {
 
         <main>
           <div className="bg-white rounded shadow p-6">
-            {error && <div className="mb-4 text-red-600">{error}</div>}
+            {error && !showForm && <div className="error-banner">{error}</div>}
             <Table
               columns={columns}
               data={artists}
@@ -157,7 +157,7 @@ const ArtistsPage: React.FC = () => {
           <div className="fixed inset-0 bg-black bg-opacity-30 flex items-start justify-center p-6">
             <div className="bg-white rounded shadow max-w-2xl w-full p-6">
               <h3 className="text-lg font-semibold mb-4">{editing ? 'Edit Artist' : 'New Artist'}</h3>
-              {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded">{error}</div>}
+              {error && <div className="error-banner">{error}</div>}
               <form onSubmit={submit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Name</label>
@@ -240,4 +240,4 @@ const ArtistsPage: React.FC = () => {
   );
 };
 
-export default ArtistsPage;
+export default React.memo(ArtistsPage);

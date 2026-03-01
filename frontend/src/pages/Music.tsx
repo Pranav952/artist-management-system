@@ -181,7 +181,7 @@ const MusicPage: React.FC = () => {
                 </p>
               </div>
             )}
-            {error && !showForm && <div className="mb-4 text-red-600">{error}</div>}
+            {error && !showForm && <div className="error-banner">{error}</div>}
             {!selectedArtistId ? (
               <div className="text-center text-gray-500 py-8">
                 Please select an artist to view their music
@@ -210,7 +210,7 @@ const MusicPage: React.FC = () => {
           <div className="fixed inset-0 bg-black bg-opacity-30 flex items-start justify-center p-6">
             <div className="bg-white rounded shadow max-w-2xl w-full p-6 mt-20">
               <h3 className="text-lg font-semibold mb-4">{editing ? 'Edit Song' : 'New Song'}</h3>
-              {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded">{error}</div>}
+              {error && <div className="error-banner">{error}</div>}
               <form onSubmit={submit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Title <span className="text-red-500">*</span></label>

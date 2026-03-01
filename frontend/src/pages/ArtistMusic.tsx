@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { musicService, artistService } from '../services/data';
 import Table from '../components/Table';
@@ -25,7 +25,7 @@ const ArtistMusicPage: React.FC = () => {
   const [editing, setEditing] = useState<Music | null>(null);
   const [form, setForm] = useState<Partial<Music>>(emptyForm);
 
-  const fetchArtist = async () => {
+  const fetchArtist = useCallback(async () => {
     if (!artistId) return;
     try {
       const resp = await artistService.getArtistById(Number(artistId));
@@ -33,9 +33,9 @@ const ArtistMusicPage: React.FC = () => {
     } catch (err: any) {
       setError(err?.response?.data?.message || 'Failed to load artist');
     }
-  };
+  }, [artistId]);
 
-  const fetchMusic = async (p = page) => {
+  const fetchMusic = useCallback(async (p = page) => {
     if (!artistId) return;
     setLoading(true);
     setError(null);
@@ -49,21 +49,21 @@ const ArtistMusicPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [artistId, page]);
 
   useEffect(() => {
     fetchArtist();
     fetchMusic(1);
   }, [artistId]);
 
-  const openCreate = () => {
+  const openCreate = useCallback(() => {
     setEditing(null);
     setForm(emptyForm);
     setShowForm(true);
     setError(null);
-  };
+  }, []);
 
-  const openEdit = (m: Music) => {
+  const openEdit = useCallback((m: Music) => {
     setEditing(m);
     setForm({
       title: m.title,
@@ -72,9 +72,9 @@ const ArtistMusicPage: React.FC = () => {
     });
     setShowForm(true);
     setError(null);
-  };
+  }, []);
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = useCallback(async (id: number) => {
     if (!confirm('Delete this song?')) return;
     setLoading(true);
     try {
@@ -85,9 +85,9 @@ const ArtistMusicPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, fetchMusic]);
 
-  const submit = async (e: React.FormEvent) => {
+  const submit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!artistId) {
       setError('Artist ID is required');
@@ -115,9 +115,9 @@ const ArtistMusicPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [artistId, form, editing, page, fetchMusic]);
 
-  const columns = [
+  const columns = useMemo(() => [
     { key: 'title' as const, label: 'Title' },
     {
       key: 'album_name' as const,
@@ -129,7 +129,7 @@ const ArtistMusicPage: React.FC = () => {
       label: 'Genre',
       render: (value: string | null) => value ? value.charAt(0).toUpperCase() + value.slice(1) : '—'
     },
-  ];
+  ], []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -156,7 +156,7 @@ const ArtistMusicPage: React.FC = () => {
 
         <main>
           <div className="bg-white rounded shadow p-6">
-            {error && !showForm && <div className="mb-4 text-red-600">{error}</div>}
+            {error && !showForm && <div className="error-banner">{error}</div>}
             <Table
               columns={columns}
               data={music}
@@ -179,7 +179,7 @@ const ArtistMusicPage: React.FC = () => {
           <div className="fixed inset-0 bg-black bg-opacity-30 flex items-start justify-center p-6">
             <div className="bg-white rounded shadow max-w-2xl w-full p-6 mt-20">
               <h3 className="text-lg font-semibold mb-4">{editing ? 'Edit Song' : 'New Song'}</h3>
-              {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded">{error}</div>}
+              {error && <div className="error-banner">{error}</div>}
               <form onSubmit={submit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Title <span className="text-red-500">*</span></label>
@@ -229,4 +229,4 @@ const ArtistMusicPage: React.FC = () => {
   );
 };
 
-export default ArtistMusicPage;
+export default React.memo(ArtistMusicPage);
