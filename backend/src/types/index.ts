@@ -9,7 +9,7 @@ export interface User {
   role?: 'admin';
   phone?: string | null;
   dob?: string | null;
-  gender?: 'male' | 'female' | 'other' | null;
+  gender?: 'm' | 'f' | 'o' | null;
   address?: string | null;
   created_at?: string;
   updated_at?: string;
@@ -27,6 +27,17 @@ export interface Artist {
   created_at?: string;
   updated_at?: string;
   deleted_at?: string | null;
+}
+
+export interface Music {
+  id: number;
+  artist_id: number;
+  title: string;
+  album_name?: string | null;
+  genre?: 'rnb' | 'country' | 'classic' | 'rock' | 'jazz' | null;
+  created_at?: string;
+  updated_at?: string;
+  artist_name?: string;
 }
 
 export interface RequestWithUser extends Request {

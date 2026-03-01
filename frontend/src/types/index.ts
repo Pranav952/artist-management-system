@@ -24,15 +24,15 @@ export interface Artist {
   updated_at?: string;
 }
 
-export interface Song {
+export interface Music {
   id: number;
-  title: string;
   artist_id: number;
-  release_date?: string;
-  duration?: number;
-  genre?: string;
+  title: string;
+  album_name?: string | null;
+  genre?: 'rnb' | 'country' | 'classic' | 'rock' | 'jazz' | null;
   created_at?: string;
   updated_at?: string;
+  artist_name?: string;
 }
 
 export interface PaginatedResponse<T> {
