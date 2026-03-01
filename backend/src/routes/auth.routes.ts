@@ -1,23 +1,19 @@
 import { Router } from 'express';
-import { body } from 'express-validator';
 import * as authController from '../controllers/auth.controller';
+import { validate } from '../middleware/validate.middleware';
+import { registerSchema, loginSchema } from '../schemas/auth.schema';
 
 const router = Router();
 
 router.post(
   '/register',
-  [
-    body('first_name').isString().isLength({ min: 2 }),
-    body('last_name').isString().isLength({ min: 2 }),
-    body('email').isEmail(),
-    body('password').isLength({ min: 6 }),
-  ],
+  validate(registerSchema),
   authController.register
 );
 
 router.post(
   '/login',
-  [body('email').isEmail(), body('password').isLength({ min: 6 })],
+  validate(loginSchema),
   authController.login
 );
 

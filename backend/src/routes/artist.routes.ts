@@ -1,7 +1,12 @@
 import { Router } from 'express';
-import { body } from 'express-validator';
 import * as artistController from '../controllers/artist.controller';
 import { requireAuth } from '../middleware/auth.middleware';
+import { validate } from '../middleware/validate.middleware';
+import {
+  createArtistSchema,
+  updateArtistSchema,
+  deleteArtistSchema,
+} from '../schemas/artist.schema';
 
 const router = Router();
 
@@ -10,17 +15,17 @@ router.get('/', requireAuth, artistController.list);
 router.post(
   '/',
   requireAuth,
-  [body('name').isString().isLength({ min: 1 }), body('gender').optional().isIn(['male', 'female', 'other'])],
+  validate(createArtistSchema),
   artistController.create
 );
 
 router.put(
   '/:id',
   requireAuth,
-  [body('name').optional().isString(), body('gender').optional().isIn(['male', 'female', 'other'])],
+  validate(updateArtistSchema),
   artistController.update
 );
 
-router.delete('/:id', requireAuth, artistController.remove);
+router.delete('/:id', requireAuth, validate(deleteArtistSchema), artistController.remove);
 
 export default router;

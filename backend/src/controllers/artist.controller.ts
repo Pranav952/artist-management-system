@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { validationResult } from 'express-validator';
 import * as artistService from '../services/artist.service';
 
 export const list = async (req: Request, res: Response, next: NextFunction) => {
@@ -15,9 +14,6 @@ export const list = async (req: Request, res: Response, next: NextFunction) => {
 
 export const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
     const { name, dob, gender, address, first_release_year, no_of_albums_released } = req.body;
     const artist = await artistService.createArtist(name, dob, gender, address, first_release_year, no_of_albums_released);
     return res.status(201).json(artist);
@@ -28,9 +24,6 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
     const id = Number(req.params.id);
     const { name, dob, gender, address, first_release_year, no_of_albums_released } = req.body;
     const artist = await artistService.updateArtist(id, name, dob, gender, address, first_release_year, no_of_albums_released);

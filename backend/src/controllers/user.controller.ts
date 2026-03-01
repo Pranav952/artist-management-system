@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { validationResult } from 'express-validator';
 import * as userService from '../services/user.service';
 import { hashPassword } from '../utils/hash';
 
@@ -16,9 +15,6 @@ export const list = async (req: Request, res: Response, next: NextFunction) => {
 
 export const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
     const { first_name, last_name, email, password, phone, dob, gender, address } = req.body;
     const hashed = await hashPassword(password);
     const user = await userService.createUser(first_name, last_name, email, hashed, phone, dob, gender, address);
@@ -30,9 +26,6 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
     const id = Number(req.params.id);
     const { first_name, last_name, email, phone, dob, gender, address } = req.body;
     const user = await userService.updateUser(id, first_name, last_name, email, phone, dob, gender, address);
