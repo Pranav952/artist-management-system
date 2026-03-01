@@ -37,7 +37,7 @@ export const registerUser = async (
   try {
     await client.query('BEGIN');
     
-    const exists = await client.query('SELECT id FROM users WHERE email = $1', [email]);
+    const exists = await client.query('SELECT id FROM users WHERE email = $1 AND deleted_at IS NULL', [email]);
     if (exists.rowCount && exists.rowCount > 0) {
       throw new Error('Email already in use');
     }
