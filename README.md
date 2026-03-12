@@ -3,7 +3,7 @@
 A full-stack web application for managing artists, their music, and user accounts. Built with React, TypeScript, Node.js, Express, and PostgreSQL.
 d
 ## Features
-
+dfd
 - **User Management** - Create, update, and manage user accounts with role-based access
 - **Artist Management** - Add artists with details like name, DOB, gender, address, release year, and album count
 - **Music Library** - Track songs for each artist with album names and genressr4
