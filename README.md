@@ -4,7 +4,7 @@ A full-stack web application for managing artists, their music, and user account
 d
 ## Features
 dfd
-- **User Management** - Create, update, and manage user accounts with role-based access
+- **User Management** - Create, update, and fmanage user accounts with role-based access
 - **Artist Management** - Add artists with details like name, DOB, gender, address, release year, and album count
 - **Music Library** - Track songs for each artist with album names and genressr4
 - **Authentication** - Secure JWT-based authentication with refresh token supports
