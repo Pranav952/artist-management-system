@@ -13,7 +13,7 @@ A full-stack web application for managing artists, their music, and user account
 - **Responsive UI** - Clean, modern interface built with Tailwind CSSs
 
 ## Tech Stack
-
+as
 ### Backend
 
 - **Node.js** + **Express** - REST API server
