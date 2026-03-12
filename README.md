@@ -11,7 +11,7 @@ dfd
 - **Soft Delete** - Records are soft-deleted, allowing data recovery and re-creation with the same information
 - **Performance Optimized** - Lazy loading, memoized components, and optimized rendering
 - **Responsive UI** - Clean, modern interface built with Tailwind CSSs
-
+s
 ## Tech Stack
 as
 ### Backend
