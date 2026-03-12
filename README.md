@@ -7,7 +7,7 @@ A full-stack web application for managing artists, their music, and user account
 - **User Management** - Create, update, and manage user accounts with role-based access
 - **Artist Management** - Add artists with details like name, DOB, gender, address, release year, and album count
 - **Music Library** - Track songs for each artist with album names and genress
-- **Authentication** - Secure JWT-based authentication with refresh token support
+- **Authentication** - Secure JWT-based authentication with refresh token supports
 - **Soft Delete** - Records are soft-deleted, allowing data recovery and re-creation with the same information
 - **Performance Optimized** - Lazy loading, memoized components, and optimized rendering
 - **Responsive UI** - Clean, modern interface built with Tailwind CSSs
