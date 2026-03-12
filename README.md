@@ -1,7 +1,7 @@
 # Artist Management System
 
 A full-stack web application for managing artists, their music, and user accounts. Built with React, TypeScript, Node.js, Express, and PostgreSQL.
-
+d
 ## Features
 
 - **User Management** - Create, update, and manage user accounts with role-based access
