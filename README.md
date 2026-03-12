@@ -10,7 +10,7 @@ A full-stack web application for managing artists, their music, and user account
 - **Authentication** - Secure JWT-based authentication with refresh token support
 - **Soft Delete** - Records are soft-deleted, allowing data recovery and re-creation with the same information
 - **Performance Optimized** - Lazy loading, memoized components, and optimized rendering
-- **Responsive UI** - Clean, modern interface built with Tailwind CSS
+- **Responsive UI** - Clean, modern interface built with Tailwind CSSs
 
 ## Tech Stack
 
